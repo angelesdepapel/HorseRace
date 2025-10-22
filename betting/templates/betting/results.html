@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Resultados - Apuestas</title>
+    <link rel="stylesheet" href="{% static 'betting/css/styles.css' %}">
+</head>
+<body>
+    <header>
+        <h1>🏆 Resultados de la Carrera</h1>
+    </header>
+
+    <main>
+        <div class="winner">
+            <h2>Ganador: {{ winner.name }}</h2>
+            <img src="{% static 'betting/img/' %}{{ winner.image }}" alt="Ganador {{ winner.name }}">
+        </div>
+
+        <div class="card">
+            <h3>Lista de Ganadores</h3>
+            <form method="post" action="{% url 'confirm_payouts' %}">
+                {% csrf_token %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>RUT</th>
+                            <th>Apostado</th>
+                            <th>Pago</th>
+                            <th>Confirmado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for bet in winning_bets %}
+                        <tr>
+                            <td>{{ bet.user_name }}</td>
+                            <td>{{ bet.user_rut }}</td>
+                            <td>${{ bet.amount }}</td>
+                            <td>${{ bet.payout }}</td>
+                            <td><input type="checkbox" name="confirmed" value="{{ bet.id }}"></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <button type="submit">✅ Confirmar pagos</button>
+            </form>
+        </div>
+    </main>
+</body>
+</html>

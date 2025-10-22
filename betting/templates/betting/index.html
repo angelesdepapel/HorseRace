@@ -1,0 +1,59 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Apuestas de Caballos</title>
+    <link rel="stylesheet" href="{% static 'betting/css/styles.css' %}">
+</head>
+<body>
+    <header>
+        <h1>🏇 Sistema de Apuestas de Caballos</h1>
+    </header>
+
+    <main class="grid-container">
+        <!-- Caballos -->
+        {% for horse in horses %}
+        <div class="card">
+            <img src="{% static 'betting/img/' %}{{ horse.image }}" alt="Caballo {{ horse.name }}">
+            <h2>{{ horse.name }}</h2>
+            <p>Total apostado: ${{ horse.total_bet }}</p>
+            <p>Pago actual: {{ horse.payout_ratio }}:1</p>
+
+            <form method="post" action="{% url 'place_bet' horse.id %}">
+                {% csrf_token %}
+                <label>Nombre:</label>
+                <input type="text" name="user_name" required>
+                <label>RUT:</label>
+                <input type="text" name="user_rut" required>
+                <label>Monto:</label>
+                <input type="number" name="amount" min="1" required>
+                <button type="submit">Apostar</button>
+            </form>
+        </div>
+        {% endfor %}
+
+        <!-- Panel global -->
+        <div class="card global-panel">
+            <h2>Panel Global</h2>
+            <p>Total apostado: ${{ total_bets }}</p>
+
+            <form method="post" action="{% url 'close_bets' %}">
+                {% csrf_token %}
+                <button type="submit" class="danger">❌ Cerrar apuestas</button>
+            </form>
+
+            <form method="post" action="{% url 'set_winner' %}">
+                {% csrf_token %}
+                <label>Caballo ganador:</label>
+                <select name="winner_id">
+                    {% for horse in horses %}
+                    <option value="{{ horse.id }}">{{ horse.name }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit">✅ Seleccionar ganador</button>
+            </form>
+        </div>
+    </main>
+</body>
+</html>
