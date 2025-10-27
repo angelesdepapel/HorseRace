@@ -1,0 +1,12 @@
+Resultados de la Carrera - Ganador: blanco
+Pozo de Apuestas: 30
+Pozo Acumulado (Bonus): 20.0
+POZO TOTAL REPARTIDO: 50.0
+Ratio de Pago: 5.00
+====================
+Apostadores Ganadores y Pagos:
+- el: Recibe 50.0 (Apostó 10)
+
+====================
+La casa gana 0.0 adicionales por redondeo.
+El pozo acumulado ha sido pagado y reseteado a 0.

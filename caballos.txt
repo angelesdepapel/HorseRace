@@ -1,0 +1,7 @@
+azul
+amarillo
+cafe
+blanco
+naranjo
+cyan
+gris
