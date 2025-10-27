@@ -4,7 +4,7 @@ import math
 import os
 
 class Horse:
-    def __init__(self, screen_width, screen_height):
+    def __init__(self, screen_width, screen_height, start_pos=(100, 100)):
         self.screen_width = screen_width
         self.screen_height = screen_height
         
@@ -17,12 +17,10 @@ class Horse:
         # Set up rectangle
         self.rect = self.image.get_rect()
         
-        # Random starting position
-        self.rect.x = random.randint(0, screen_width - 50)
-        self.rect.y = random.randint(0, screen_height - 50)
-        
-        # Random initial velocity
-        self.speed = random.uniform(3.0, 6.0)
+        # starting pos
+        self.rect.x, self.rect.y = start_pos
+        # Random initial angle
+        self.speed = 5
         angle = random.uniform(0, 2 * math.pi)
         self.speed_x = self.speed * math.cos(angle)
         self.speed_y = self.speed * math.sin(angle)
@@ -100,14 +98,10 @@ class Horse:
         self.rect.y = old_y
         
         # Apply realistic bounce based on collision side
-        if min_overlap == overlap_left:  # Left side of box
-            self.speed_x = abs(self.speed_x)  # Bounce right
-        elif min_overlap == overlap_right:  # Right side of box
-            self.speed_x = -abs(self.speed_x)  # Bounce left
-        elif min_overlap == overlap_top:  # Top of box
-            self.speed_y = abs(self.speed_y)  # Bounce down
-        elif min_overlap == overlap_bottom:  # Bottom of box
-            self.speed_y = -abs(self.speed_y)  # Bounce up
+        if min_overlap == overlap_left or min_overlap == overlap_right:  
+            self.speed_x = -self.speed_x  # Bounce r
+        else:
+            self.speed_y = -self.speed_y
     
     def draw(self, screen):
         screen.blit(self.image, self.rect)

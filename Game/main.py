@@ -2,15 +2,20 @@ import pygame
 import sys
 from Horse import Horse
 from sound import SoundManager
-from box import Box
+from map import Map
+import random
+
+seed = input("semilla: ")
+seed = int(seed)
+random.seed(seed)
 
 # Initialize Pygame
 pygame.init()
 
 # Set up fullscreen display
-screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+screen = pygame.display.set_mode((1080, 720))
 WIDTH, HEIGHT = screen.get_size()
-pygame.display.set_caption("Bouncing Horse")
+pygame.display.set_caption("Carrera de Caballos")
 
 # Colors
 BACKGROUND_COLOR = (0, 204, 102)  # Green color
@@ -22,16 +27,13 @@ sound_manager.load_sound("clop", "resources/sounds/clop.wav")
 # Create horse
 horse = Horse(WIDTH, HEIGHT)
 
+# Create Map
+game_map = Map(WIDTH, HEIGHT)
 # Create multiple stationary boxes
-boxes = [
-    Box(WIDTH//2 - 50, HEIGHT//2 - 50, 100, 100, (255, 0, 0)),    # Center
-    Box(100, 100, 80, 80, (0, 0, 255)),                           # Top-left
-    Box(WIDTH - 180, 100, 80, 80, (0, 0, 255)),                   # Top-right
-    Box(100, HEIGHT - 180, 80, 80, (0, 0, 255)),                  # Bottom-left
-    Box(WIDTH - 180, HEIGHT - 180, 80, 80, (0, 0, 255)),          # Bottom-right
-    Box(WIDTH//4, HEIGHT//3, 60, 60, (255, 255, 0)),              # Random position
-    Box(WIDTH*3//4, HEIGHT*2//3, 60, 60, (255, 255, 0))           # Random position
-]
+
+boxes = game_map.box_list()
+
+box_actual = boxes[0]
 
 # Clock for controlling frame rate
 clock = pygame.time.Clock()
@@ -46,6 +48,27 @@ while running:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 running = False
+            elif event.key == pygame.K_DOWN:
+                box_actual.move(0, 10)
+            elif event.key == pygame.K_UP:
+                box_actual.move(0, -10)
+            elif event.key == pygame.K_LEFT:
+                box_actual.move(-10, 0)
+            elif event.key == pygame.K_RIGHT:
+                box_actual.move(10, 0)
+            
+            elif event.key == pygame.K_w:
+                box_actual.scale(0, -10)
+            elif event.key == pygame.K_s:
+                box_actual.scale(0, 10)
+            elif event.key == pygame.K_a:
+                box_actual.scale(-10, 0)
+            elif event.key == pygame.K_d:
+                box_actual.scale(10, 0)
+            
+            elif event.key == pygame.K_SPACE:
+                box_actual.print()
+        
     
     # Update horse
     bounced = horse.update(boxes)
