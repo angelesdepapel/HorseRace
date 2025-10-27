@@ -25,7 +25,25 @@ sound_manager = SoundManager()
 sound_manager.load_sound("clop", "resources/sounds/clop.wav")
 
 # Create horse
-horse = Horse(WIDTH, HEIGHT)
+azul = Horse(WIDTH, HEIGHT, start_pos=(113, 40))
+amarillo = Horse(WIDTH, HEIGHT, start_pos=(196, 40))
+cafe = Horse(WIDTH, HEIGHT, start_pos=(100, 100))
+blanco = Horse(WIDTH, HEIGHT, start_pos=(179, 100))
+naranjo = Horse(WIDTH, HEIGHT, start_pos=(239, 100))
+cyan = Horse(WIDTH, HEIGHT, start_pos=(113, 160))
+gris = Horse(WIDTH, HEIGHT, start_pos=(196, 160))
+horses = [azul,
+          amarillo,
+          cafe,
+          blanco,
+          naranjo,
+          cyan,
+          gris,]
+
+for horse in horses:
+    for rival in horses:
+        if horse != rival:
+            horse.rivals.append(rival)
 
 # Create Map
 game_map = Map(WIDTH, HEIGHT)
@@ -48,34 +66,16 @@ while running:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 running = False
-            elif event.key == pygame.K_DOWN:
-                box_actual.move(0, 10)
-            elif event.key == pygame.K_UP:
-                box_actual.move(0, -10)
-            elif event.key == pygame.K_LEFT:
-                box_actual.move(-10, 0)
-            elif event.key == pygame.K_RIGHT:
-                box_actual.move(10, 0)
-            
-            elif event.key == pygame.K_w:
-                box_actual.scale(0, -10)
-            elif event.key == pygame.K_s:
-                box_actual.scale(0, 10)
-            elif event.key == pygame.K_a:
-                box_actual.scale(-10, 0)
-            elif event.key == pygame.K_d:
-                box_actual.scale(10, 0)
-            
-            elif event.key == pygame.K_SPACE:
-                box_actual.print()
+
         
     
     # Update horse
-    bounced = horse.update(boxes)
-    
-    # Play sound if horse bounced
-    if bounced:
-        sound_manager.play_sound("clop", volume=0.3)
+    for horse in horses:
+        bounced = horse.update(boxes)
+        
+        # Play sound if horse bounced
+        if bounced:
+            sound_manager.play_sound("clop", volume=0.3)
     
     # Fill the screen with green background
     screen.fill(BACKGROUND_COLOR)
@@ -85,7 +85,8 @@ while running:
         box.draw(screen)
     
     # Draw horse
-    horse.draw(screen)
+    for horse in horses:
+        horse.draw(screen)
     
     # Update the display
     pygame.display.flip()

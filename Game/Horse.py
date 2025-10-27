@@ -4,7 +4,7 @@ import math
 import os
 
 class Horse:
-    def __init__(self, screen_width, screen_height, start_pos=(100, 100)):
+    def __init__(self, screen_width, screen_height, start_pos=(100, 100), name="DEFAULT HORSE"):
         self.screen_width = screen_width
         self.screen_height = screen_height
         
@@ -17,8 +17,13 @@ class Horse:
         # Set up rectangle
         self.rect = self.image.get_rect()
         
+        # rival horses
+        self.rivals : list[Horse] = []
+
         # starting pos
-        self.rect.x, self.rect.y = start_pos
+        x, y = start_pos
+        self.rect.x = x-25
+        self.rect.y = y
         # Random initial angle
         self.speed = 5
         angle = random.uniform(0, 2 * math.pi)
@@ -33,53 +38,28 @@ class Horse:
         self.rect.x += self.speed_x
         self.rect.y += self.speed_y
         
-        # Check for wall collisions
-        wall_bounce = self._check_wall_collision()
-        
         # Check for box collisions
         box_bounce = self._check_box_collisions(boxes, old_x, old_y)
+        horse_bounce = self._check_horse_collisions(old_x, old_y)
         
-        return wall_bounce or box_bounce
+        return box_bounce or horse_bounce
     
-    def _check_wall_collision(self):
-        bounced = False
+    def _check_horse_collisions(self, old_x, old_y):
+        for rival in self.rivals:
+            if self.rect.colliderect(rival.rect):
+                self._handle_box_collision(rival.rect, old_x, old_y)
+                return True
+        return False
         
-        # Left wall
-        if self.rect.left <= 0:
-            self.rect.left = 0
-            self.speed_x = abs(self.speed_x)
-            bounced = True
-        
-        # Right wall
-        elif self.rect.right >= self.screen_width:
-            self.rect.right = self.screen_width
-            self.speed_x = -abs(self.speed_x)
-            bounced = True
-        
-        # Top wall
-        if self.rect.top <= 0:
-            self.rect.top = 0
-            self.speed_y = abs(self.speed_y)
-            bounced = True
-        
-        # Bottom wall
-        elif self.rect.bottom >= self.screen_height:
-            self.rect.bottom = self.screen_height
-            self.speed_y = -abs(self.speed_y)
-            bounced = True
-        
-        return bounced
     
     def _check_box_collisions(self, boxes, old_x, old_y):
-        bounced = False
         for box in boxes:
             if box.check_collision(self.rect):
                 self._handle_box_collision(box.rect, old_x, old_y)
-                bounced = True
-                break  # Only handle one collision per frame
-        return bounced
+                return True
+        return False
     
-    def _handle_box_collision(self, box_rect, old_x, old_y):
+    def _handle_box_collision(self, box_rect: pygame.Rect, old_x, old_y):
         # Calculate collision side
         dx = (self.rect.centerx - box_rect.centerx) / (box_rect.width / 2)
         dy = (self.rect.centery - box_rect.centery) / (box_rect.height / 2)
