@@ -3,6 +3,7 @@ import sys
 from Horse import Horse
 from sound import SoundManager
 from map import Map
+from premio import Carrot
 import random
 
 seed = input("semilla: ")
@@ -25,13 +26,13 @@ sound_manager = SoundManager()
 sound_manager.load_sound("clop", "resources/sounds/clop.wav")
 
 # Create horse
-azul = Horse(WIDTH, HEIGHT, start_pos=(113, 40))
-amarillo = Horse(WIDTH, HEIGHT, start_pos=(196, 40))
-cafe = Horse(WIDTH, HEIGHT, start_pos=(100, 100))
-blanco = Horse(WIDTH, HEIGHT, start_pos=(179, 100))
-naranjo = Horse(WIDTH, HEIGHT, start_pos=(239, 100))
-cyan = Horse(WIDTH, HEIGHT, start_pos=(113, 160))
-gris = Horse(WIDTH, HEIGHT, start_pos=(196, 160))
+azul = Horse(WIDTH, HEIGHT, start_pos=(113, 40), image="azul.png", name="azul")
+amarillo = Horse(WIDTH, HEIGHT, start_pos=(196, 40), image="amarillo.png", name="amarillo")
+cafe = Horse(WIDTH, HEIGHT, start_pos=(100, 100), image="cafe.png", name="cafe")
+blanco = Horse(WIDTH, HEIGHT, start_pos=(179, 100), image="blanco.png", name="blanco")
+naranjo = Horse(WIDTH, HEIGHT, start_pos=(239, 100), image="naranjo.png", name="naranjo")
+cyan = Horse(WIDTH, HEIGHT, start_pos=(113, 160), image="cyan.png", name="cyan")
+gris = Horse(WIDTH, HEIGHT, start_pos=(196, 160), image="gris.png", name="gris")
 horses = [azul,
           amarillo,
           cafe,
@@ -48,10 +49,10 @@ for horse in horses:
 # Create Map
 game_map = Map(WIDTH, HEIGHT)
 # Create multiple stationary boxes
-
 boxes = game_map.box_list()
 
-box_actual = boxes[0]
+#premio
+carrot = Carrot(WIDTH, HEIGHT)
 
 # Clock for controlling frame rate
 clock = pygame.time.Clock()
@@ -67,8 +68,6 @@ while running:
             if event.key == pygame.K_ESCAPE:
                 running = False
 
-        
-    
     # Update horse
     for horse in horses:
         bounced = horse.update(boxes)
@@ -87,6 +86,11 @@ while running:
     # Draw horse
     for horse in horses:
         horse.draw(screen)
+        if horse._winner(carrot):
+            print(horse.name, "es el ganador :)")
+            running = False
+
+    carrot.draw(screen)
     
     # Update the display
     pygame.display.flip()

@@ -4,15 +4,16 @@ import math
 import os
 
 class Horse:
-    def __init__(self, screen_width, screen_height, start_pos=(100, 100), name="DEFAULT HORSE"):
+    def __init__(self, screen_width, screen_height, start_pos=(100, 100), name="DEFAULT HORSE", image="horse.png"):
         self.screen_width = screen_width
         self.screen_height = screen_height
         
         # Load horse image and scale to 50x50
-        image_path = os.path.join("resources", "images", "horse.png")
+        image_path = os.path.join("resources", "images", image)
         original_image = pygame.image.load(image_path)
         self.image = pygame.transform.scale(original_image, (50, 50))
         self.image = self.image.convert_alpha()
+        self.name = name
         
         # Set up rectangle
         self.rect = self.image.get_rect()
@@ -50,6 +51,9 @@ class Horse:
                 self._handle_box_collision(rival.rect, old_x, old_y)
                 return True
         return False
+    
+    def _winner(self, carrot):
+        return self.rect.colliderect(carrot.rect)
         
     
     def _check_box_collisions(self, boxes, old_x, old_y):
